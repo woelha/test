@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고객 관리 시스템</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            margin: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        #customerList {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        #exportButton {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #exportButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>고객 관리 시스템</h1>
+
+    <form id="customerForm">
+        <!-- 기존 양식 내용 추가 -->
+    </form>
+
+    <div>
+        <label for="searchInput">검색:</label>
+        <input type="text" id="searchInput" oninput="searchCustomers()" placeholder="고객 이름으로 검색">
+    </div>
+
+    <div id="customerList">
+        <h2>고객 목록</h2>
+        <ul id="list"></ul>
+        <button id="exportButton" onclick="exportToExcel()">고객 목록 엑셀로 내보내기</button>
+    </div>
+
+    <script>
+        // 기존 스크립트 내용 추가
+
+        // 추가된 함수: 고객 목록을 엑셀 파일로 내보내기
+        function exportToExcel() {
+            const data = customers.map(customer => ({
+                '고객 이름': customer.name,
+                '성별': customer.gender,
+                '담당자': customer.manager,
+                '상담일자': customer.counselingDateTime,
+                '상담 유형': customer.counselingType,
+                '주요 이슈 및 문제': customer.mainIssues,
+                '다음 상담 일자': customer.nextCounselingDate,
+                '권고 사항 및 과제': customer.recommendations,
+                '피드백': customer.feedback,
+                '만족도 평가': customer.satisfaction,
+                '긴급 상황': customer.emergency,
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(data);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, '고객 목록');
+            const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+            const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = '고객목록.xlsx';
+            link.click();
+        }
+    </script>
+
+</body>
+</html>
+ 
